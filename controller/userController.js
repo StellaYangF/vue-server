@@ -77,13 +77,93 @@ class UserController {
     }
   }
 
-  async validate(ctx) {}
+  async validate(ctx) {
+    let [ , token ] = ctx.headers.authorization.split(' ');
+    try {
+      let decoded = jsonwebtoken.verify(token, secret);
+      decoded.exp = Math.floor(Date.now() / 1000) + (60 *60);
+      let newToken = jsonwebtoken.sign({ ...decoded }, secret);
+      ctx.body = {
+        err: 0,
+        data: {
+          token: newToken,
+          ...decoded,
+        }
+      }
+    } catch(e) {
+      console.log(e);
+      ctx.body = {
+        err: 1,
+        data: 'token 不正确或者过期',
+      }
+    }
+  }
 
-  async sendEmail(ctx) {}
+  async sendEmail(ctx) {
+    let { email: username } = ctx.query;
+    let r = await User.findOne({ username });
+    if (r) {
+      try {
+        const code = Math.ceil(Math.random() * 100000);
+        await sendEmail({
+          email: username,
+          code,
+        });
+        setValue(username, code, 10 * 60);
+      } catch(e) {
+        console.log(e);
+        ctx.body = {
+          err: 1,
+          data: '发送失败'
+        }
+      }
+    } else {
+      ctx.body = {
+        err: 1,
+        data: '用户不存在呢，去注册一个吧'
+      }
+    }
+  }
 
-  async codeValidate(ctx) {}
+  async codeValidate(ctx) {
+    let { code, username } = ctx.request.body;
+    let oldCode = await getValue(username);
+    if (code == oldCode) {
+      ctx.body = {
+        err: 0,
+        data: '验证码正确',
+      }
+    } else {
+      ctx.body = {
+        err: 1,
+        data: '验证码不正确'
+      }
+    }
+  }
 
-  async changePassword(ctx) {}
+  async changePassword(ctx) {
+    let { code, username, password } = ctx.request.body;
+    let oldCode = await getValue(username);
+    if (code == oldCode) {
+      try {
+        await User.update({ username }, { password });
+        ctx.body = {
+          err: 0,
+          data: '修改成功',
+        }
+      }catch(e) {
+        ctx.body = {
+          err: 1,
+          data: '修改失败',
+        }
+      }
+    } else {
+      ctx.body = {
+        err: 1,
+        data: '验证码不正确',
+      } 
+    }
+  }
   
 }
 

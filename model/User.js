@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Role', // 0 普通用户 1 管理员
-    default: '5ecf7e4a1fb3832918dac1c3',
+    default: '5ecf7e4a1fb3832918dac1c3', // 普通用户
   },
   avatar: {
     type: String,
