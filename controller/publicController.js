@@ -1,0 +1,30 @@
+const SliderModel = require('../model/Slider');
+const { setValue } = require('../config/redisConfig');
+const svgCaptcha = require('svg-captcha');
+
+class PublicController {
+  async getSlider(ctx) {
+    let sliders = await SliderModel.find({});
+    ctx.body = {
+      err: 0,
+      data: sliders,
+    }
+  }
+
+  async getCaptcha(ctx) {
+    const query = ctx.query;
+    const newCaptcha = svgCaptcha.create({
+      size: 4,
+      width: 150,
+      height: 38,
+      noise: Math.floor(Math.random() * 5),
+    });
+    setValue(query.uid, newCaptcha.text, 10 * 60);
+    ctx.body = {
+      err: 0,
+      data: newCaptcha.data,
+    }
+  }
+}
+
+module.exports = new PublicController;
