@@ -82,6 +82,7 @@ class UserController {
   }
 
   async validate(ctx) {
+    console.log(ctx);
     let [ , token ] = ctx.headers.authorization.split(' ');
     try {
       let decoded = jsonwebtoken.verify(token, secret);
