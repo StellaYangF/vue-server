@@ -3,10 +3,14 @@ const { promisify } = require('util');
 const config = require('./index');
 
 const client = redis.createClient({
-  host: config.redis.hostname,
-  prot: config.redis.port,
+  host: config.redis.host,
+  port: config.redis.port,
 });
 
+client.on("error", function(error) {
+  console.error('redis error', error);
+});
+ 
 const setValue = (key, value, time) => {
   if (typeof time !== 'undefined') {
     client.set(key, value, 'EX', time);

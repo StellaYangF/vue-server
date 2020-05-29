@@ -9,10 +9,15 @@ class UserController {
   async login(ctx) {
     const { uid, code, password, username } = ctx.request.body;
     let storeUid = await getValue(uid);
-    console.log(storeUid);
     if (code.toLowerCase() == storeUid.toLowerCase()) {
       let user = await User.findOne({ username, password });
-      user = uer.toJSON();
+      if (!user) {
+        return ctx.body = {
+          err: 1,
+          data: '用户名不存在或密码错误'
+        } 
+      }
+      user = user.toJSON();
       let authList = await Auth.find({ role: user.role._id });
       if (user.status === 1){ // 禁用
         ctx.body = {
@@ -21,13 +26,13 @@ class UserController {
         };
       } else {
         delete user.password;
-        const toke = jsonwebtoken.sign({ ...user, authList }, secret, {
+        const token = jsonwebtoken.sign({ ...user, authList }, secret, {
           expiresIn: '1h',
         });
         ctx.body = {
           err: 0,
           data: {
-            toke,
+            token,
             ...user,
             authList,
           }
@@ -52,7 +57,6 @@ class UserController {
             data: '用户名已经存在',
           }
         } else {
-          console.log(username, password);
           await User.create({
             username,
             password,
@@ -63,7 +67,7 @@ class UserController {
           }
         }
       } catch(e) {
-        console.log(e);
+        console.log('userController reg error: ', e);
         ctx.body = {
           err: 1,
           data: '数据库出错',
@@ -91,7 +95,7 @@ class UserController {
         }
       }
     } catch(e) {
-      console.log(e);
+      console.log('userController validate', e);
       ctx.body = {
         err: 1,
         data: 'token 不正确或者过期',
@@ -111,7 +115,7 @@ class UserController {
         });
         setValue(username, code, 10 * 60);
       } catch(e) {
-        console.log(e);
+        console.log('userController sendEmail error: ', e);
         ctx.body = {
           err: 1,
           data: '发送失败'

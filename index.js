@@ -11,7 +11,7 @@ const WS = require("./config/webSocket");
 const app = new Koa();
 app.use((ctx, next) => {
   return next().catch((err) => {
-    console.log(err);
+    console.log('middleware err: ', err);
     if (err.status == 401) {
       ctx.status = 401;
       ctx.body = "Protected resource, use Authorization header to get access\n";
@@ -24,7 +24,7 @@ app.use(cors());
 app.use(JWT({ secret }).unless({ path: [/^\/public/, /^\/user/] }));
 app.use(body());
 app.use(router());
-app.on('error', err => console.log(err))
+app.on('app error', err => console.log(err))
 app.listen(3000, () =>
   console.log(
     `Server listening on http://localhost:3000, press Ctl + C to stop`

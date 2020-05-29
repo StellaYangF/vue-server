@@ -19,6 +19,7 @@ class PublicController {
       height: 38,
       noise: Math.floor(Math.random() * 5),
     });
+    // console.log('query.uid user uid', query.uid);
     setValue(query.uid, newCaptcha.text, 10 * 60);
     ctx.body = {
       err: 0,
