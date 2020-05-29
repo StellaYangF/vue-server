@@ -21,7 +21,7 @@ app.use((ctx, next) => {
   });
 });
 app.use(cors());
-// app.use(JWT({ secret }).unless({ path: [/^\/public/, /^\/user/] }));
+app.use(JWT({ secret }).unless({ path: [/^\/public/, /^\/user/] }));
 app.use(body());
 app.use(router());
 app.on('error', err => console.log(err))
