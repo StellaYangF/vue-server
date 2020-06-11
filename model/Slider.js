@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+let mongoose = require('../config/dbConfig');
 const SliderSchema = new mongoose.Schema({
-  url: {
-    type: String
-  }
+    url: {
+        type: String
+    }
 });
-const SliderModel = mongoose.model('Slider', SliderSchema);
-module.exports = SliderModel;
+const SliderModal = mongoose.model('Slider', SliderSchema);
+module.exports = SliderModal;

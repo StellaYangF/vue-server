@@ -1,26 +1,26 @@
-const nodemailer = require('nodemailer');
+let nodemailer = require('nodemailer');
 
 async function sendEmail(sendInfo) {
   let transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
-    prot: 587,
-    secure: false,
+    port: 587,
+    secure: false, 
     auth: {
-      user: '188761973@qq.com',
-      pass: 'yf920622yf',
+      user: '1062878468@qq.com', // generated ethereal user
+      pass: 'yf920622yf', // generated ethereal password
     },
-  });
-  
-  const info = await transporter.sendMail({
-    from: '"认证邮箱" <188761973@qq.com>',
-    to: sendInfo.email,
-    subject: '修改密码的验证码，无需回复',
+  })
+
+  let info = await transporter.sendMail({
+    from: '"认证邮件" <1062878468@qq.com>', // sender address
+    to: sendInfo.email, 
+    subject: '修改密码的验证码，无需回复', // plain text body
     html: `
-      <p>您好，${sendInfo.email}，您的验证码是 ${sendInfo.code}，有效时间 30 分钟。</p>
-    `,
-  });
-
+          <div>您好，${sendInfo.email} ，您的验证是 ${sendInfo.code} 有效时间30分钟
+    `, // html body
+  })
   return 'Message sent: %s', info.messageId
-};
+}
 
-module.exports = sendEmail;
+
+module.exports = sendEmail

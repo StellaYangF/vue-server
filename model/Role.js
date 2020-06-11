@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+let mongoose = require('../config/dbConfig');
 
-const RoleSchema = mongoose.Schema({
-  roleName: {
-    type: String,
-  },
+// 权限
+const RoleSchema = new mongoose.Schema({
+    roleName:{
+        type:String
+    }
 });
+const SliderModal = mongoose.model('Role', RoleSchema);
 
-const RoleModel = mongoose.model('Role', RoleSchema);
-
-module.exports = RoleModel;
+module.exports = SliderModal;

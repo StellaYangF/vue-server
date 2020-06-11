@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const config = require('./index');
+let mongoose = require('mongoose');
+let config  = require('./index');
 
-mongoose.connect(config.mongo, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+mongoose.connect(config.mongo,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true
 });
 
-module.exports = mongoose;
+module.exports =  mongoose;
